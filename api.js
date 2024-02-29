@@ -1,6 +1,6 @@
 window.addEventListener("load", () => {
     const btn1 = document.querySelector("#searchForm");
-    const input = document.querySelector('#submit');
+    const input = document.querySelector('#search');
 
 
     btn1.addEventListener("submit",function(event){
@@ -10,11 +10,11 @@ window.addEventListener("load", () => {
 
         const search = input.value;
 
-        const url = 'https://api.vam.ac.uk/v2/objects/search?q=' + encodeURIComponent(search);
+        const url = 'https://api.vam.ac.uk/v2/objects/search?images=true&q=' + encodeURIComponent(search);
 
         console.log(url);
 
-        var xhr = new XMLHttpRequest;
+        var xhr = new XMLHttpRequest();
         xhr.addEventListener("load",function(){
 
             if(xhr.status == 200){
@@ -23,13 +23,24 @@ window.addEventListener("load", () => {
 
                 const data = JSON.parse(xhr.responseText);
 
+                while(results.firstChild) {
+                    results.removeChild(results.lastChild);
+                }
+
                 for(record of data.records) {
 
                     console.log(record);
 
+                    const title = document.createElement('h2');
+                    const date = document.createElement('h3');
                     const img = document.createElement('img');
-                    img.setAttribute('src',record._images._primaryimageID);
 
+                    title.results = record._primaryTitle;
+                    date.results = record.primaryDate;
+                    img.setAttribute('src',record._images._primary_thumbnail);
+
+                    results.appendChild(title);
+                    results.appendChild(date);
                     results.appendChild(img);
                 }
 
